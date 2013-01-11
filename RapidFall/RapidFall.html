@@ -1,158 +1,25 @@
 <html>
 	<head>
 		<title>Rapid Fall</title>
-		<style>canvas { width: 100%; height: 100% }</style>
+		<style>canvas { width: 400px; height: 300px }</style>
 	</head>
 	<body>
-		<script src="three.js"></script>
-		<script src="detector.js"></script>
-		<script src="jquery-1.8.3.min.js"></script>
+		<script src="lib/three.js"></script>
+		<script src="lib/detector.js"></script>
+		<script src="lib/jquery-1.8.3.min.js"></script>
+		<script src="RapidFall.js"></script>
+		<script src="Constants.js"></script>
+		<script src="Config.js"></script>
+		<script src="Input.js"></script>
+		<script src="GameObjects/GameObjects.js"></script>
+		<script src="GameObjects/Platform.js"></script>
+		<script src="GameObjects/Player.js"></script>
 		<script>
-			function RapidFall() {
-			
-				var self = this;
-			
-				// SCENE
-				this.scene = new THREE.Scene();
-				
-				// CAMERA
-				this.camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-				this.camera.position.z = 5;
-				
-				// RENDERER
-				if( Detector.webgl ){
-					this.renderer = new THREE.WebGLRenderer();
-					this.renderer.setClearColorHex( 0xBBBBBB, 1 );
-				// uncomment if webgl is required
-				//}else{
-					// Detector.addGetWebGLMessage();
-					// return true;
-				}else{
-					this.renderer = new THREE.CanvasRenderer();
-				}
-				this.renderer.setSize(window.innerWidth, window.innerHeight);
-				document.body.appendChild(this.renderer.domElement);
-				
-				// LIGHT
-				var pointLight = new THREE.PointLight(0xFFFFFF);
-				pointLight.position.x = 0;
-				pointLight.position.y = 50;
-				pointLight.position.z = 130;
-				this.scene.add(pointLight);
-				
-				// GEOMETRIES
-				var platformGeometry = new THREE.CubeGeometry(1,0.1,1);
-				var playerGeometry = new THREE.SphereGeometry(0.2);
-				
-				// MATERIALS
-				var platformMaterial = new THREE.MeshPhongMaterial({color: 0x0000FF});
-				var playerMaterial = new THREE.MeshPhongMaterial({color: 0xFF0000});
-				
-				// ENTITIES DEFINITION
-				this.Platform = function(x, y, z) {
-					this.gfxObject = new THREE.Mesh(platformGeometry, platformMaterial);
-					self.scene.add(this.gfxObject);
-					this.gfxObject.translateX(x ? x : Math.random());
-					this.gfxObject.translateY(y ? y : 0);
-					this.gfxObject.translateZ(z ? z : 0);
-				}
-				
-				this.Player = function(x, y, z) {
-					this.gfxObject = new THREE.Mesh(playerGeometry, playerMaterial);
-					self.scene.add(this.gfxObject);
-					this.gfxObject.translateX(x ? x : 0);
-					this.gfxObject.translateY(y ? y : 0);
-					this.gfxObject.translateZ(z ? z : 0);
-				}
-				
-				// ENTITIES INITIALIZATION
-				this.entities = {};
-				this.entities.player = new this.Player();
-				this.entities.platforms = [];
-				this.entities.platforms.push(new this.Platform());
-				
-				this.spawnPlatformTimer = 0;
-				
-				// MAINLOOP
-				var currentTime = new Date().getTime();
-				var accumulator = 0;
-				var PHYSICS_FRAME_TIME = 5;
-				
-				(function mainloop(){
-					newTime = new Date().getTime();
-					accumulator = newTime - currentTime;
-					currentTime = newTime;
-					while (accumulator > PHYSICS_FRAME_TIME) {
-						self.update(PHYSICS_FRAME_TIME);
-						accumulator -= PHYSICS_FRAME_TIME;
-					}
-					requestAnimationFrame(mainloop);
-					self.renderer.render(self.scene, self.camera);
-				})();
-				
-			}
-			
-			// INPUT MANAGEMENT
-			RapidFall.prototype.input = (function() {
-		
-				var LEFT_ARROW = 37;
-				var RIGHT_ARROW = 39;
-				
-				var keysToMonitor = [LEFT_ARROW, RIGHT_ARROW];
-				var pressedKeysRegistry = [];
-			
-				$(document).keydown(function(e){
-					switch($.inArray(e.keyCode, keysToMonitor) != -1) {
-						case true:
-							pressedKeysRegistry[e.keyCode] = true;
-					}
-				}).keyup(function(e){
-					switch($.inArray(e.keyCode, keysToMonitor) != -1) {
-						case true:
-							pressedKeysRegistry[e.keyCode] = false;
-					}
-				});
-			
-				return {
-					"MOVE_LEFT" : LEFT_ARROW,
-					"MOVE_RIGHT" : RIGHT_ARROW,
-					isPressed : function(inputCode) {
-						return pressedKeysRegistry[inputCode];
-					}
-				}
-				
-			})();
-			
-			// UPDATE FUNCTION
-			RapidFall.prototype.update = function(dt) {
-				
-				for(i in this.entities.platforms) {
-					this.entities.platforms[i].gfxObject.translateY(0.001);
-					if (this.entities.platforms[i].gfxObject.position.y>1) {
-						this.scene.remove(this.entities.platforms[i].gfxObject);
-						this.entities.platforms.splice(i, 1);
-					}
-				}
-				
-				this.spawnPlatformTimer += dt;
-				
-				if (this.spawnPlatformTimer > 1000) {
-					this.spawnPlatformTimer = 0;
-					this.entities.platforms.push(new this.Platform());
-				}
-				
-				if (this.input.isPressed(this.input.MOVE_LEFT)) {
-					this.entities.player.gfxObject.translateX(-0.001);
-				}
-				
-				if (this.input.isPressed(this.input.MOVE_RIGHT)) {
-					this.entities.player.gfxObject.translateX(0.001);
-				}
-				
-			}
-			
-			new RapidFall();
-			
+			var game = new RapidFall();
+			game.initializeScene();
+			game.player = new RapidFall.GameObjects.Player();
+			game.scene.add(game.player.gfxObject);
+			game.mainloop();
 		</script>
 	</body>
 </html>
