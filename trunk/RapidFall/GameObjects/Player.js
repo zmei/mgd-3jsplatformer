@@ -1,24 +1,33 @@
 
 RapidFall.GameObjects.Player = function(x, y, z) {
 
-	var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-	//var material = new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'resources/Wolf/Wolf_Diffuse_256x256.jpg' ) } );
+	this.speed = RapidFall.Config.PLAYER_FALLING_SPEED;
+
+	var texture = THREE.ImageUtils.loadTexture( 'resources/Wolf/Wolf_Diffuse_256x256.jpg' );
+	texture.flipY = false;
+	var material = new THREE.MeshBasicMaterial( { map: texture, morphTargets: true } );
 	var loader = new THREE.JSONLoader();
 	var self = this;
+	RapidFall.loading++;
 	loader.load(
 		'resources/Wolf/Wolf.js',
-		function ( geometry ) {
-			geometry.computeTangents();
-			self.gfxObject = new THREE.Mesh( geometry, material );
-			self.gfxObject.position.x = self.gfxObject.position.y = self.gfxObject.position.z = 0;
-			self.gfxObject.rotation.x = self.gfxObject.rotation.y = self.gfxObject.rotation.z = 0;
-			self.gfxObject.scale.x = self.gfxObject.scale.y = self.gfxObject.scale.z = 700;
-			self.gfxObject.matrixAutoUpdate = false;
-			self.gfxObject.updateMatrix();
+		function ( geometry ) {		
+			self.gfxObject = new THREE.MorphAnimMesh( geometry, material );
+			
+			self.gfxObject.matrixAutoUpdate = true;
+			self.gfxObject.position.x = x ? x : 0;
+			self.gfxObject.position.y = y ? y : 0;
+			self.gfxObject.position.z = z ? z : 0;
+			
+			self.gfxObject.scale.x = self.gfxObject.scale.y = self.gfxObject.scale.z = 0.15;
+			
+			self.gfxObject.lookAt(new THREE.Vector3(0,0,-1));
+			
+			self.gfxObject.parseAnimations();
+			self.gfxObject.playAnimation('wolfrun', 20);
+			
 			RapidFall.scene.add(self.gfxObject);
-			self.gfxObject.translateX(x ? x : 0);
-			self.gfxObject.translateY(y ? y : 0);
-			self.gfxObject.translateZ(z ? z : 0);
+			RapidFall.loading--;
 		}
 	);
 }
