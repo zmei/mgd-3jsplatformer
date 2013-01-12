@@ -17,8 +17,7 @@
 		<script>
 			var game = new RapidFall();
 			game.initializeScene();
-			game.player = new RapidFall.GameObjects.Player();
-			game.scene.add(game.player.gfxObject);
+			game.initializeEntities();
 			game.mainloop();
 		</script>
 	</body>
