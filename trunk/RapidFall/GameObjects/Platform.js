@@ -6,6 +6,8 @@ RapidFall.GameObjects.Platform = function(x, y, z) {
 
 	this.gfxObject = new THREE.Mesh(platformGeometry, platformMaterial);
 	
+	RapidFall.scene.add(this.gfxObject);
+	
 	this.gfxObject.translateX(x ? x : Math.random());
 	this.gfxObject.translateY(y ? y : 0);
 	this.gfxObject.translateZ(z ? z : 0);
