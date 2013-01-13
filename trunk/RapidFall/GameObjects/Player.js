@@ -5,13 +5,17 @@ RapidFall.GameObjects.Player = function() {
 
 	var texture = THREE.ImageUtils.loadTexture( 'resources/Wolf/Wolf_Diffuse_256x256.jpg' );
 	texture.flipY = false;
-	var material = new THREE.MeshBasicMaterial( { map: texture, morphTargets: true } );
+	var material = new THREE.MeshPhongMaterial( { map: texture, morphTargets: true } );
 	var loader = new THREE.JSONLoader();
 	var self = this;
 	RapidFall.GameState.loading++;
 	loader.load(
 		'resources/Wolf/Wolf.js',
-		function ( geometry ) {		
+		function ( geometry ) {
+		
+			geometry.computeFaceNormals()
+			geometry.computeVertexNormals()
+			
 			self.gfxObject = new THREE.MorphAnimMesh( geometry, material );
 			
 			self.gfxObject.matrixAutoUpdate = true;

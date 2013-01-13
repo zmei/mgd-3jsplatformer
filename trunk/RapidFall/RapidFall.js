@@ -24,7 +24,7 @@ function RapidFall(parameters) {
 			GS.score += dt;
 		
 			GS.increaseSpeedTimer += dt;
-			if (GS.increaseSpeedTimer > 10000) {
+			if (GS.increaseSpeedTimer > RapidFall.Config.PLATFORM_SPEED_INCREMENT_TIMER) {
 				GS.increaseSpeedTimer = 0;
 				GS.platformSpeedIncrement += RapidFall.Config.PLATFORM_SPEED_INCREMENT;
 			}
@@ -47,7 +47,7 @@ function RapidFall(parameters) {
 			}
 
 			GS.spawnPlatformTimer += dt;
-			if (GS.spawnPlatformTimer > RapidFall.Config.PLATFORM_SPAWN_INTERVAL) {
+			if (GS.spawnPlatformTimer > (RapidFall.Config.PLATFORM_SPAWN_INTERVAL - GS.platformSpeedIncrement)) {
 				GS.spawnPlatformTimer = 0;
 				var platform = new RapidFall.GameObjects.Platform();
 				RapidFall.scene.add(platform.gfxObject);
@@ -70,12 +70,11 @@ function RapidFall(parameters) {
 			GS.player.gfxObject.updateAnimation(dt);
 			
 			if (GS.player.gfxObject.position.y < -RapidFall.Config.FIELD_HALF_HEIGHT || GS.player.gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
-				RapidFall.Sound.play('resources/wolf.mp3');
 				if ( GS.highscore < GS.score ) {
 					localStorage.setItem("RapidFallHighScore", GS.score);
 				}
 				RapidFall.GameState.reset();
-				RapidFall.hideHUD();
+				//RapidFall.hideHUD();
 				RapidFall.showMessage();
 			}
 			
@@ -100,7 +99,7 @@ RapidFall.prototype.initializeScene = function () {
 	
 	// RENDERER
 	if( Detector.webgl ){
-		this.renderer = new THREE.WebGLRenderer();
+		this.renderer = new THREE.WebGLRenderer({antialias:true});
 	// uncomment if webgl is required
 	}else{
 		// Detector.addGetWebGLMessage();
@@ -108,15 +107,18 @@ RapidFall.prototype.initializeScene = function () {
 	//}else{
 	//	this.renderer = new THREE.CanvasRenderer();
 	}
-	this.renderer.setClearColorHex( 0x6495ED, 1 );
+	this.renderer.setClearColorHex( 0x000000, 0 );
 	this.renderer.setSize(width, height);
 	document.body.appendChild(this.renderer.domElement);
 	
 	// LIGHTING
-	var pointLight = new THREE.PointLight(0xFFFFFF);
+	var light = new THREE.AmbientLight( 0xFFFFFF );
+	RapidFall.scene.add( light );
+	
+	var pointLight = new THREE.PointLight( 0xFFFFFF );
 	pointLight.position.x = 0;
 	pointLight.position.y = 50;
-	pointLight.position.z = 130;
+	pointLight.position.z = 25;
 	RapidFall.scene.add(pointLight);
 	
 }
@@ -132,8 +134,10 @@ RapidFall.prototype.updateHUD = function() {
 	$(RapidFall.Config.SCORE_DOM_ELEMENT).html('SCORE ' + RapidFall.GameState.score);
 	$(RapidFall.Config.HIGHSCORE_DOM_ELEMENT).html('HIGH  ' + Math.max(RapidFall.GameState.score, RapidFall.GameState.highscore));
 }
-		
+var offset = 0;
 RapidFall.prototype.drawScene = function() {
+	offset -= 0.1;
+	$('canvas').css('background-position', '0% ' + offset + '%')
 	this.renderer.render(RapidFall.scene, this.camera);
 }
 

@@ -27,7 +27,7 @@ RapidFall.GameObjects.Platform.geometry = new THREE.CubeGeometry(
 );
 
 RapidFall.GameObjects.Platform.materials = [
-	new THREE.MeshPhongMaterial({color: 0xFF0000}),
-	new THREE.MeshPhongMaterial({color: 0x00FF00}),
-	new THREE.MeshPhongMaterial({color: 0x0000FF}),
+	new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture( 'resources/stone_0.jpg' )}),
+	new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture( 'resources/stone_1.jpg' )}),
+	new THREE.MeshPhongMaterial({map: THREE.ImageUtils.loadTexture( 'resources/stone_2.jpg' )}),
 ];
