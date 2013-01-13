@@ -1,17 +1,40 @@
 <html>
 	<head>
 		<title>Rapid Fall</title>
-		<link href='http://fonts.googleapis.com/css?family=Risque' rel='stylesheet' type='text/css'>
 		<style>
 			body { width: 100%; height: 100%; overflow:hidden; margin:0; }
+			.hud { font-family: Helvetica, Arial, sans-serif; font-size: 9px; font-weight:bold; z-index: 100; padding: 3px; color:white; background: black; opacity:0.9; }
 			canvas { position: absolute; top: 0; left: 0; }
-			#score { position: absolute; width:74px; height:42px; top: 0; right: 0; color:white; background: black; opacity:0.9; padding: 3px; font-family: Helvetica, Arial, sans-serif; font-size: 9px; font-weight:bold; z-index: 100;}
+			#score { position: absolute; width:74px; height:42px; top: 0; right: 0; display:none; }
+			#stats { display:none; }
+			#messageContainer { position: absolute; left: 50%; top: 50%; }
+			#message { position: relative; left: -50%; text-align:center; font-size: 120%; padding: 10px; border-radius: 8px; }
+			#message a { color: yellow; }
 		</style>
 	</head>
 	<body>
-		<div id="score">
-			<div id="scoreText">SCORE <span></span></div>
-			<div id="highScoreText">HIGH <span></span></div>
+		<div id="score" class="hud">
+			<div id="scoreText"></div>
+			<div id="highScoreText"></div>
+		</div>
+		<div id="messageContainer">
+			<div id="message" class="hud">
+				<p>
+					RapidFall<br>
+					<span style="font-size:75%">
+						a WebGL experiment<br>
+						by <a target="blank" href="http://andreacasaccia.net/">Zuzzolo Kazakhstan</a>
+					</span>
+				</p>
+				<p>
+					ENTER to start<br>
+					&larr; &rarr; to control
+				</p>
+				<p style="font-size:50%">
+					Powered by <a href="">Three.js</a><br>
+					<a href="http://oos.moxiecode.com/js_webgl/md2_converter/">MD2 to JSON converter</a> by <a href="http://oos.moxiecode.com/blog/">moxiecode.com</a><br>
+				</p>			
+			</div>
 		</div>
 		<script src="lib/three.js"></script>
 		<script src="lib/detector.js"></script>
@@ -25,12 +48,13 @@
 		<script src="GameObjects/GameObjects.js"></script>
 		<script src="GameObjects/Platform.js"></script>
 		<script src="GameObjects/Player.js"></script>
+		<script src="GameState.js"></script>
 		<script>
-			var game = new RapidFall();
-			game.initializeScene();
-			game.displayFPS();
-			game.initializeEntities();
-			game.mainloop();
+			var rf = new RapidFall({showFPS:true});
+			rf.initializeScene();
+			rf.initializeGameState();
+			rf.drawScene();
+			rf.mainloop();
 		</script>
 	</body>
 </html>
