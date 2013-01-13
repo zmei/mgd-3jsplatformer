@@ -1,34 +1,23 @@
 function RapidFall() {
 
 	var spawnPlatformTimer = 0;
-	var backgroundOffset = 0;
 	var firstPlatform = 0;
+	var highscore = parseInt(localStorage.getItem("RapidFallHighScore"));
 	
 	this.update = function(dt) {
 	
-		if (RapidFall.loading == 0) {
-	
-			this.player.gfxObject.position.y += this.player.speed * dt;
-			this.player.speed += RapidFall.Config.GRAVITY;
-	
-			for(i in this.platforms) {
-				this.platforms[i].gfxObject.translateY(RapidFall.Config.PLATFORM_SPEED );
-				if (this.platforms[i].gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
-					RapidFall.scene.remove(this.platforms[i].gfxObject);
-					this.platforms.splice(i,1);
-				}
-				if (
-					this.player.gfxObject.position.x > this.platforms[i].gfxObject.position.x - RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
-					this.player.gfxObject.position.x < this.platforms[i].gfxObject.position.x + RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
-					this.player.gfxObject.position.y < this.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT &&
-					this.player.gfxObject.position.y > this.platforms[i].gfxObject.position.y
-				) {
-					this.player.speed = RapidFall.Config.PLAYER_FALLING_SPEED;
-					this.player.gfxObject.position.y = this.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT * 0.75;
-				}
+		if (!RapidFall.loading && !RapidFall.gameOver) {
+		
+			RapidFall.score += dt;
+		
+			RapidFall.fasterTimer += dt;
+			if (RapidFall.fasterTimer > 10000) {
+				RapidFall.fasterTimer = 0;
+				RapidFall.platformSpeedIncrement += RapidFall.basePlatformSpeedIncrement;
 			}
-			
-			this.player.gfxObject.updateAnimation(dt);
+		
+			this.player.gfxObject.position.y += this.player.speed.y * dt + 1/2 * RapidFall.Config.GRAVITY * dt * dt;
+			this.player.speed.y = this.player.speed.y + RapidFall.Config.GRAVITY * dt;
 			
 			if (RapidFall.Input.isPressed(RapidFall.Config.MOVE_LEFT)) {
 				this.player.gfxObject.lookAt(new THREE.Vector3(1000,0,0));
@@ -39,6 +28,25 @@ function RapidFall() {
 			} else {
 				this.player.gfxObject.lookAt(new THREE.Vector3(0,0,-1000));
 			}
+	
+			for(i in this.platforms) {
+				this.platforms[i].gfxObject.translateY(RapidFall.Config.PLATFORM_SPEED + RapidFall.platformSpeedIncrement);
+				if (this.platforms[i].gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
+					RapidFall.scene.remove(this.platforms[i].gfxObject);
+					this.platforms.splice(i,1);
+				}
+				if (
+					this.player.gfxObject.position.x > this.platforms[i].gfxObject.position.x - RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
+					this.player.gfxObject.position.x < this.platforms[i].gfxObject.position.x + RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
+					this.player.gfxObject.position.y < this.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT &&
+					this.player.gfxObject.position.y > this.platforms[i].gfxObject.position.y
+				) {
+					this.player.speed.y = 0;
+					this.player.gfxObject.position.y = this.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT * 0.75;
+				}
+			}
+			
+			this.player.gfxObject.updateAnimation(dt);
 			
 			spawnPlatformTimer += dt;
 			
@@ -49,9 +57,13 @@ function RapidFall() {
 				this.platforms.push(platform);
 			}
 			
-			// background
-			backgroundOffset-=0.2;
-			$('#background').css('background-position', '0% ' + backgroundOffset + '%' );
+			if (this.player.gfxObject.position.y < -RapidFall.Config.FIELD_HALF_HEIGHT || this.player.gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
+				RapidFall.Sound.play('resources/wolf.mp3');
+				RapidFall.gameOver++;
+				if ( highscore < RapidFall.score ) {
+					localStorage.setItem("RapidFallHighScore", RapidFall.score);
+				}
+			}
 			
 		}
 		
@@ -59,8 +71,12 @@ function RapidFall() {
 	
 }
 
-RapidFall.lastPlatformSpawnPosition = 0;
+RapidFall.score = 0;
 RapidFall.loading = 0;
+RapidFall.gameOver = 0;
+RapidFall.fasterTimer = 0;
+RapidFall.basePlatformSpeedIncrement = 0.02;
+RapidFall.platformSpeedIncrement = 0;
 
 RapidFall.prototype.initializeScene = function () {
 
@@ -78,7 +94,6 @@ RapidFall.prototype.initializeScene = function () {
 	// RENDERER
 	if( Detector.webgl ){
 		this.renderer = new THREE.WebGLRenderer();
-		this.renderer.setClearColorHex( 0x000000, 0 );
 	// uncomment if webgl is required
 	//}else{
 		// Detector.addGetWebGLMessage();
@@ -86,6 +101,7 @@ RapidFall.prototype.initializeScene = function () {
 	}else{
 		this.renderer = new THREE.CanvasRenderer();
 	}
+	this.renderer.setClearColorHex( 0x6495ED, 1 );
 	this.renderer.setSize(width, height);
 	document.body.appendChild(this.renderer.domElement);
 	
@@ -108,18 +124,20 @@ RapidFall.prototype.displayFPS = function () {
 }
 
 RapidFall.prototype.initializeEntities = function () {
-
 	this.player = new RapidFall.GameObjects.Player();
 	this.platforms = [];
 	var platform = new RapidFall.GameObjects.Platform();
 	this.platforms.push(platform);
-	
 }
 
 RapidFall.prototype.mainloop = function (){
 
 	var currentTime = new Date().getTime();
 	var accumulator = 0;
+	var highscore = parseInt(localStorage.getItem("RapidFallHighScore"));
+	var highscoreElement = $('#highScoreText span');
+	$(highscoreElement).html(highscore);
+	var scoreElement = $('#scoreText span');
 	var self = this;
 	
 	(function mainloop(){
@@ -134,6 +152,11 @@ RapidFall.prototype.mainloop = function (){
 		if (typeof self.stats == 'object') {
 			self.stats.update();
 		}
+		if (RapidFall.score > highscore) {
+			$(highscoreElement).html(RapidFall.score);
+		}
+		$(scoreElement).html(RapidFall.score);
+		
 		self.renderer.render(RapidFall.scene, self.camera);
 	})();
 
