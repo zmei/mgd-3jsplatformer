@@ -1,7 +1,7 @@
 
 RapidFall.GameObjects.Player = function(x, y, z) {
 
-	this.speed = RapidFall.Config.PLAYER_FALLING_SPEED;
+	this.speed = {x: 0, y: 0};
 
 	var texture = THREE.ImageUtils.loadTexture( 'resources/Wolf/Wolf_Diffuse_256x256.jpg' );
 	texture.flipY = false;

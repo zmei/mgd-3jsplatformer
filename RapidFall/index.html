@@ -1,13 +1,18 @@
 <html>
 	<head>
 		<title>Rapid Fall</title>
+		<link href='http://fonts.googleapis.com/css?family=Risque' rel='stylesheet' type='text/css'>
 		<style>
-			body { width: 100%; height: 100%; margin:0; }
-			#background { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('resources/sky.jpg'); z-index: 1; }
-			canvas { position: absolute; top: 0; left: 0; z-index: 2; }
+			body { width: 100%; height: 100%; overflow:hidden; margin:0; }
+			canvas { position: absolute; top: 0; left: 0; }
+			#score { position: absolute; width:74px; height:42px; top: 0; right: 0; color:white; background: black; opacity:0.9; padding: 3px; font-family: Helvetica, Arial, sans-serif; font-size: 9px; font-weight:bold; z-index: 100;}
 		</style>
 	</head>
 	<body>
+		<div id="score">
+			<div id="scoreText">SCORE <span></span></div>
+			<div id="highScoreText">HIGH <span></span></div>
+		</div>
 		<script src="lib/three.js"></script>
 		<script src="lib/detector.js"></script>
 		<script src="lib/jquery-1.8.3.min.js"></script>
@@ -16,6 +21,7 @@
 		<script src="Constants.js"></script>
 		<script src="Config.js"></script>
 		<script src="Input.js"></script>
+		<script src="Sound.js"></script>
 		<script src="GameObjects/GameObjects.js"></script>
 		<script src="GameObjects/Platform.js"></script>
 		<script src="GameObjects/Player.js"></script>
@@ -26,6 +32,5 @@
 			game.initializeEntities();
 			game.mainloop();
 		</script>
-		<div id="background"></div>
 	</body>
 </html>
