@@ -10,18 +10,22 @@ RapidFall.GameObjects.Platform = function(x, y, z) {
 		RapidFall.Config.FIELD_HALF_WIDTH
 	);
 	
-	if (!RapidFall.firstPlatform) {
-		RapidFall.firstPlatform = 1;
-		this.gfxObject.translateX(x ? x : 0);
-	} else {
-		this.gfxObject.translateX(x ? x : nextX);
+	if (RapidFall.GameState.gameOver == true) {
+		nextX = 0;
 	}
-	this.gfxObject.translateY(y ? y : -RapidFall.Config.FIELD_HALF_HEIGHT);
-	this.gfxObject.translateZ(z ? z : 0);
+	
+	this.gfxObject.position.x = (x ? x : nextX);
+	this.gfxObject.position.y = (y ? y : -RapidFall.Config.FIELD_HALF_HEIGHT);
+	this.gfxObject.position.z = (z ? z : 0);
 	
 }
 
-RapidFall.GameObjects.Platform.geometry = new THREE.CubeGeometry(RapidFall.Config.PLATFORM_HALF_WIDTH*2,RapidFall.Config.PLATFORM_HALF_HEIGHT*2,5);
+RapidFall.GameObjects.Platform.geometry = new THREE.CubeGeometry(
+	RapidFall.Config.PLATFORM_HALF_WIDTH * 2,
+	RapidFall.Config.PLATFORM_HALF_HEIGHT * 2,
+	RapidFall.Config.PLATFORM_HALF_DEPTH
+);
+
 RapidFall.GameObjects.Platform.materials = [
 	new THREE.MeshPhongMaterial({color: 0xFF0000}),
 	new THREE.MeshPhongMaterial({color: 0x00FF00}),

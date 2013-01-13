@@ -1,69 +1,82 @@
-function RapidFall() {
+function RapidFall(parameters) {
 
-	var spawnPlatformTimer = 0;
-	var firstPlatform = 0;
-	var highscore = parseInt(localStorage.getItem("RapidFallHighScore"));
-	highscore = isNaN(highscore) ? 0 : highscore;
+	var self = this;
+
+	if (parameters) {
+		if(parameters.showFPS) {
+			(function () {
+				self.stats = new Stats();
+				self.stats.domElement.style.position = 'absolute';
+				self.stats.domElement.style.top = '0px';
+				self.stats.domElement.style.left = '0px';
+				self.stats.domElement.style.zIndex = 100;
+				$('body').append( self.stats.domElement );
+			})();
+		}
+	}
 	
 	this.update = function(dt) {
 	
-		if (!RapidFall.loading && !RapidFall.gameOver) {
-		
-			RapidFall.score += dt;
-		
-			RapidFall.fasterTimer += dt;
-			if (RapidFall.fasterTimer > 10000) {
-				RapidFall.fasterTimer = 0;
-				RapidFall.platformSpeedIncrement += RapidFall.basePlatformSpeedIncrement;
-			}
-		
-			this.player.gfxObject.position.y += this.player.speed.y * dt + 1/2 * RapidFall.Config.GRAVITY * dt * dt;
-			this.player.speed.y = this.player.speed.y + RapidFall.Config.GRAVITY * dt;
-			
-			if (RapidFall.Input.isPressed(RapidFall.Config.MOVE_LEFT)) {
-				this.player.gfxObject.lookAt(new THREE.Vector3(1000,0,0));
-				this.player.gfxObject.translateZ(-RapidFall.Config.PLAYER_RUNNING_SPEED);
-			} else if (RapidFall.Input.isPressed(RapidFall.Config.MOVE_RIGHT)) {
-				this.player.gfxObject.lookAt(new THREE.Vector3(-1000,0,0));
-				this.player.gfxObject.translateZ(-RapidFall.Config.PLAYER_RUNNING_SPEED);
-			} else {
-				this.player.gfxObject.lookAt(new THREE.Vector3(0,0,-1000));
-			}
+		var GS = RapidFall.GameState;
 	
-			for(i in this.platforms) {
-				this.platforms[i].gfxObject.translateY(RapidFall.Config.PLATFORM_SPEED + RapidFall.platformSpeedIncrement);
-				if (this.platforms[i].gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
-					RapidFall.scene.remove(this.platforms[i].gfxObject);
-					this.platforms.splice(i,1);
+		if (!GS.loading && !GS.gameOver) {
+		
+			GS.score += dt;
+		
+			GS.increaseSpeedTimer += dt;
+			if (GS.increaseSpeedTimer > 10000) {
+				GS.increaseSpeedTimer = 0;
+				GS.platformSpeedIncrement += RapidFall.Config.PLATFORM_SPEED_INCREMENT;
+			}
+		
+			for(i in GS.platforms) {
+				GS.platforms[i].gfxObject.translateY(RapidFall.Config.PLATFORM_SPEED + GS.platformSpeedIncrement);
+				if (GS.platforms[i].gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
+					RapidFall.scene.remove(GS.platforms[i].gfxObject);
+					GS.platforms.splice(i,1);
 				}
 				if (
-					this.player.gfxObject.position.x > this.platforms[i].gfxObject.position.x - RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
-					this.player.gfxObject.position.x < this.platforms[i].gfxObject.position.x + RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
-					this.player.gfxObject.position.y < this.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT &&
-					this.player.gfxObject.position.y > this.platforms[i].gfxObject.position.y
+					GS.player.gfxObject.position.x > GS.platforms[i].gfxObject.position.x - RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
+					GS.player.gfxObject.position.x < GS.platforms[i].gfxObject.position.x + RapidFall.Config.PLATFORM_HALF_WIDTH * 1.1 &&
+					GS.player.gfxObject.position.y < GS.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT &&
+					GS.player.gfxObject.position.y > GS.platforms[i].gfxObject.position.y
 				) {
-					this.player.speed.y = 0;
-					this.player.gfxObject.position.y = this.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT * 0.75;
+					GS.player.speed.y = 0;
+					GS.player.gfxObject.position.y = GS.platforms[i].gfxObject.position.y + RapidFall.Config.PLATFORM_HALF_HEIGHT * 0.75;
 				}
 			}
-			
-			this.player.gfxObject.updateAnimation(dt);
-			
-			spawnPlatformTimer += dt;
-			
-			if (spawnPlatformTimer > RapidFall.Config.PLATFORM_SPAWN_INTERVAL) {
-				spawnPlatformTimer = 0;
+
+			GS.spawnPlatformTimer += dt;
+			if (GS.spawnPlatformTimer > RapidFall.Config.PLATFORM_SPAWN_INTERVAL) {
+				GS.spawnPlatformTimer = 0;
 				var platform = new RapidFall.GameObjects.Platform();
 				RapidFall.scene.add(platform.gfxObject);
-				this.platforms.push(platform);
+				GS.platforms.push(platform);
 			}
 			
-			if (this.player.gfxObject.position.y < -RapidFall.Config.FIELD_HALF_HEIGHT || this.player.gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
+			GS.player.gfxObject.position.y += GS.player.speed.y * dt + 1/2 * RapidFall.Config.GRAVITY * dt * dt;
+			GS.player.speed.y = GS.player.speed.y + RapidFall.Config.GRAVITY * dt;
+			
+			if (RapidFall.Input.isPressed(RapidFall.Config.MOVE_LEFT)) {
+				GS.player.gfxObject.lookAt(new THREE.Vector3(RapidFall.Constants.INFINITY,0,0));
+				GS.player.gfxObject.translateZ(-RapidFall.Config.PLAYER_RUNNING_SPEED);
+			} else if (RapidFall.Input.isPressed(RapidFall.Config.MOVE_RIGHT)) {
+				GS.player.gfxObject.lookAt(new THREE.Vector3(-RapidFall.Constants.INFINITY,0,0));
+				GS.player.gfxObject.translateZ(-RapidFall.Config.PLAYER_RUNNING_SPEED);
+			} else {
+				GS.player.gfxObject.lookAt(new THREE.Vector3(0,0,-RapidFall.Constants.INFINITY));
+			}
+			
+			GS.player.gfxObject.updateAnimation(dt);
+			
+			if (GS.player.gfxObject.position.y < -RapidFall.Config.FIELD_HALF_HEIGHT || GS.player.gfxObject.position.y > RapidFall.Config.FIELD_HALF_HEIGHT) {
 				RapidFall.Sound.play('resources/wolf.mp3');
-				RapidFall.gameOver++;
-				if ( highscore < RapidFall.score ) {
-					localStorage.setItem("RapidFallHighScore", RapidFall.score);
+				if ( GS.highscore < GS.score ) {
+					localStorage.setItem("RapidFallHighScore", GS.score);
 				}
+				RapidFall.GameState.reset();
+				RapidFall.hideHUD();
+				RapidFall.showMessage();
 			}
 			
 		}
@@ -71,13 +84,6 @@ function RapidFall() {
 	}
 	
 }
-
-RapidFall.score = 0;
-RapidFall.loading = 0;
-RapidFall.gameOver = 0;
-RapidFall.fasterTimer = 0;
-RapidFall.basePlatformSpeedIncrement = 0.02;
-RapidFall.platformSpeedIncrement = 0;
 
 RapidFall.prototype.initializeScene = function () {
 
@@ -96,11 +102,11 @@ RapidFall.prototype.initializeScene = function () {
 	if( Detector.webgl ){
 		this.renderer = new THREE.WebGLRenderer();
 	// uncomment if webgl is required
-	//}else{
-		// Detector.addGetWebGLMessage();
-		// return true;
 	}else{
-		this.renderer = new THREE.CanvasRenderer();
+		// Detector.addGetWebGLMessage();
+		return true;
+	//}else{
+	//	this.renderer = new THREE.CanvasRenderer();
 	}
 	this.renderer.setClearColorHex( 0x6495ED, 1 );
 	this.renderer.setSize(width, height);
@@ -115,33 +121,28 @@ RapidFall.prototype.initializeScene = function () {
 	
 }
 
-RapidFall.prototype.displayFPS = function () {	
-	this.stats = new Stats();
-	this.stats.domElement.style.position = 'absolute';
-	this.stats.domElement.style.top = '0px';
-	this.stats.domElement.style.left = '0px';
-	this.stats.domElement.style.zIndex = 100;
-	$('body').append( this.stats.domElement );
+RapidFall.prototype.initializeGameState = function () {	
+	RapidFall.GameState.reset();
 }
 
-RapidFall.prototype.initializeEntities = function () {
-	this.player = new RapidFall.GameObjects.Player();
-	this.platforms = [];
-	var platform = new RapidFall.GameObjects.Platform();
-	this.platforms.push(platform);
+RapidFall.prototype.updateHUD = function() {
+	if (typeof this.stats == 'object') {
+		this.stats.update();
+	}
+	$(RapidFall.Config.SCORE_DOM_ELEMENT).html('SCORE ' + RapidFall.GameState.score);
+	$(RapidFall.Config.HIGHSCORE_DOM_ELEMENT).html('HIGH  ' + Math.max(RapidFall.GameState.score, RapidFall.GameState.highscore));
+}
+		
+RapidFall.prototype.drawScene = function() {
+	this.renderer.render(RapidFall.scene, this.camera);
 }
 
 RapidFall.prototype.mainloop = function (){
 
 	var currentTime = new Date().getTime();
 	var accumulator = 0;
-	var highscore = parseInt(localStorage.getItem("RapidFallHighScore"));
-	highscore = isNaN(highscore) ? 0 : highscore;
-	var highscoreElement = $('#highScoreText span');
-	$(highscoreElement).html(highscore);
-	var scoreElement = $('#scoreText span');
 	var self = this;
-	
+		
 	(function mainloop(){
 		newTime = new Date().getTime();
 		accumulator = newTime - currentTime;
@@ -151,15 +152,24 @@ RapidFall.prototype.mainloop = function (){
 				accumulator -= RapidFall.Config.PHYSICS_FRAME_TIME;
 		}
 		requestAnimationFrame(mainloop);
-		if (typeof self.stats == 'object') {
-			self.stats.update();
-		}
-		if (RapidFall.score > highscore) {
-			$(highscoreElement).html(RapidFall.score);
-		}
-		$(scoreElement).html(RapidFall.score);
-		
-		self.renderer.render(RapidFall.scene, self.camera);
+		self.updateHUD();
+		self.drawScene();
 	})();
+	
+}
 
+RapidFall.showMessage = function() {
+	$(RapidFall.Config.MESSAGE_DOM_ELEMENT).fadeIn();
+}
+
+RapidFall.hideMessage = function() {
+	$(RapidFall.Config.MESSAGE_DOM_ELEMENT).fadeOut();
+}
+
+RapidFall.showHUD = function() {
+	$(RapidFall.Config.HUD_DOM_ELEMENTS_SELECTORS).fadeIn();
+}
+
+RapidFall.hideHUD = function() {
+	$(RapidFall.Config.HUD_DOM_ELEMENTS_SELECTORS).fadeOut();
 }
