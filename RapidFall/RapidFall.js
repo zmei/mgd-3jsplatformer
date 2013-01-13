@@ -3,6 +3,7 @@ function RapidFall() {
 	var spawnPlatformTimer = 0;
 	var firstPlatform = 0;
 	var highscore = parseInt(localStorage.getItem("RapidFallHighScore"));
+	highscore = isNaN(highscore) ? 0 : highscore;
 	
 	this.update = function(dt) {
 	
@@ -135,6 +136,7 @@ RapidFall.prototype.mainloop = function (){
 	var currentTime = new Date().getTime();
 	var accumulator = 0;
 	var highscore = parseInt(localStorage.getItem("RapidFallHighScore"));
+	highscore = isNaN(highscore) ? 0 : highscore;
 	var highscoreElement = $('#highScoreText span');
 	$(highscoreElement).html(highscore);
 	var scoreElement = $('#scoreText span');
