@@ -12,7 +12,7 @@ RapidFall.GameState = {
 }
 
 RapidFall.GameState.reset = function () {
-	RapidFall.Sound.play('resources/wolf.mp3');
+	$('audio[src="resources/wolf.mp3"]').get(0).play();
 	RapidFall.GameState.highscore = (function() {
 		var hs = parseInt(localStorage.getItem("RapidFallHighScore"));
 		return isNaN(hs) ? 0 : hs;
@@ -23,7 +23,12 @@ RapidFall.GameState.reset = function () {
 	RapidFall.GameState.increaseSpeedTimer = 0;
 	RapidFall.GameState.platformSpeedIncrement = 0;
 	RapidFall.GameState.loading = 0;
-	RapidFall.GameState.player = new RapidFall.GameObjects.Player();
+	if (RapidFall.GameState.player == null) {
+		RapidFall.GameState.player = new RapidFall.GameObjects.Player();
+	} else {
+		RapidFall.GameState.player.gfxObject.position.x = RapidFall.GameState.player.gfxObject.position.y = RapidFall.GameState.player.gfxObject.position.z = 0;
+		RapidFall.GameState.player.speed = {x: 0, y: 0};
+	}
 	for(i in RapidFall.GameState.platforms) {
 		RapidFall.scene.remove(RapidFall.GameState.platforms[i].gfxObject);
 	}
