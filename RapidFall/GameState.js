@@ -12,6 +12,7 @@ RapidFall.GameState = {
 }
 
 RapidFall.GameState.reset = function () {
+	RapidFall.Sound.play('resources/wolf.mp3');
 	RapidFall.GameState.highscore = (function() {
 		var hs = parseInt(localStorage.getItem("RapidFallHighScore"));
 		return isNaN(hs) ? 0 : hs;
