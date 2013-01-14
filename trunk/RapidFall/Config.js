@@ -25,9 +25,9 @@ RapidFall.Config = {
 };
 
 $(document).ready(function(){
-	RapidFall.Config.HIGHSCORE_ELEMENT = $('#highScoreText');
-	RapidFall.Config.SCORE_ELEMENT = $('#scoreText');
-	RapidFall.Config.MESSAGE_ELEMENT = $('#message');
-	RapidFall.Config.HUD_ELEMENT = $('#score, #stats');
-	RapidFall.Config.FOREGROUND_ELEMENT = $('#foreground');
+	RapidFall.Config.HIGHSCORE_ELEMENT = (function(){return $('#highScoreText')})();
+	RapidFall.Config.SCORE_ELEMENT = (function(){return $('#scoreText')})();
+	RapidFall.Config.MESSAGE_ELEMENT = (function(){return $('#message')})();
+	RapidFall.Config.HUD_ELEMENT = (function(){return $('#score, #stats')})();
+	RapidFall.Config.FOREGROUND_ELEMENT = (function(){return $('#foreground')})();
 });
