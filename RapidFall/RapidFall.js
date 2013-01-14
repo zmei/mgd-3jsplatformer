@@ -131,7 +131,9 @@ RapidFall.prototype.updateHUD = function() {
 	if (typeof this.stats == 'object') {
 		this.stats.update();
 	}
-	$(RapidFall.Config.SCORE_ELEMENT).html('SCORE ' + RapidFall.GameState.score);
+	if (!RapidFall.GameState.gameOver) {
+		$(RapidFall.Config.SCORE_ELEMENT).html('SCORE ' + RapidFall.GameState.score);
+	}
 	$(RapidFall.Config.HIGHSCORE_ELEMENT).html('HIGH  ' + Math.max(RapidFall.GameState.score, RapidFall.GameState.highscore));
 }
 
