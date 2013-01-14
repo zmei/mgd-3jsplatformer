@@ -112,8 +112,8 @@ RapidFall.prototype.initializeScene = function () {
 	document.body.appendChild(this.renderer.domElement);
 	
 	// LIGHTING
-	var light = new THREE.AmbientLight( 0xFFFFFF );
-	RapidFall.scene.add( light );
+	var ambientLight = new THREE.AmbientLight( 0xFFFFFF );
+	RapidFall.scene.add( ambientLight );
 	
 	var pointLight = new THREE.PointLight( 0xFFFFFF );
 	pointLight.position.x = 0;
@@ -134,10 +134,12 @@ RapidFall.prototype.updateHUD = function() {
 	$(RapidFall.Config.SCORE_DOM_ELEMENT).html('SCORE ' + RapidFall.GameState.score);
 	$(RapidFall.Config.HIGHSCORE_DOM_ELEMENT).html('HIGH  ' + Math.max(RapidFall.GameState.score, RapidFall.GameState.highscore));
 }
-var offset = 0;
+
+var bgOffset = 0;
+var fgDomElement = $('#foreground');
 RapidFall.prototype.drawScene = function() {
-	offset -= 0.1;
-	$('canvas').css('background-position', '0% ' + offset + '%')
+	bgOffset += 0.4;
+	$(RapidFall.fgDomElement).css('background-position', '0% ' + bgOffset + '%')
 	this.renderer.render(RapidFall.scene, this.camera);
 }
 
