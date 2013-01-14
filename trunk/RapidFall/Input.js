@@ -9,7 +9,6 @@ RapidFall.Input = (function() {
 	var pressedKeysRegistry = [];
 
 	$(document).keydown(function(e){
-
 		switch($.inArray(e.keyCode, keysToMonitor) != -1) {
 			case true:
 				pressedKeysRegistry[e.keyCode] = true;
