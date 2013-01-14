@@ -6,6 +6,7 @@ RapidFall.GameState = {
 	spawnPlatformTimer : 0,
 	increaseSpeedTimer : 0,
 	platformSpeedIncrement : 0,
+	backgroundOffset: 0,
 	loading : 0,
 	player : null,
 	platforms : null
