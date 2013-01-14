@@ -131,15 +131,15 @@ RapidFall.prototype.updateHUD = function() {
 	if (typeof this.stats == 'object') {
 		this.stats.update();
 	}
-	$(RapidFall.Config.SCORE_DOM_ELEMENT).html('SCORE ' + RapidFall.GameState.score);
-	$(RapidFall.Config.HIGHSCORE_DOM_ELEMENT).html('HIGH  ' + Math.max(RapidFall.GameState.score, RapidFall.GameState.highscore));
+	$(RapidFall.Config.SCORE_ELEMENT).html('SCORE ' + RapidFall.GameState.score);
+	$(RapidFall.Config.HIGHSCORE_ELEMENT).html('HIGH  ' + Math.max(RapidFall.GameState.score, RapidFall.GameState.highscore));
 }
 
-var bgOffset = 0;
-var fgDomElement = $('#foreground');
+var backgroundOffset = 0;
+
 RapidFall.prototype.drawScene = function() {
-	bgOffset += 0.4;
-	$(RapidFall.fgDomElement).css('background-position', '0% ' + bgOffset + '%')
+	backgroundOffset += 0.5;
+	$(RapidFall.Config.FOREGROUND_ELEMENT).css('background-position', '0% ' + backgroundOffset + '%')
 	this.renderer.render(RapidFall.scene, this.camera);
 }
 
@@ -165,17 +165,17 @@ RapidFall.prototype.mainloop = function (){
 }
 
 RapidFall.showMessage = function() {
-	$(RapidFall.Config.MESSAGE_DOM_ELEMENT).fadeIn();
+	$(RapidFall.Config.MESSAGE_ELEMENT).fadeIn();
 }
 
 RapidFall.hideMessage = function() {
-	$(RapidFall.Config.MESSAGE_DOM_ELEMENT).fadeOut();
+	$(RapidFall.Config.MESSAGE_ELEMENT).fadeOut();
 }
 
 RapidFall.showHUD = function() {
-	$(RapidFall.Config.HUD_DOM_ELEMENTS_SELECTORS).fadeIn();
+	$(RapidFall.Config.HUD_ELEMENT).fadeIn();
 }
 
 RapidFall.hideHUD = function() {
-	$(RapidFall.Config.HUD_DOM_ELEMENTS_SELECTORS).fadeOut();
+	$(RapidFall.Config.HUD_ELEMENT).fadeOut();
 }

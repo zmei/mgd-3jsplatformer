@@ -1,10 +1,5 @@
 
 RapidFall.Config = {
-
-	HIGHSCORE_DOM_ELEMENT : (function() {return $('#highScoreText')})(),
-	SCORE_DOM_ELEMENT : (function() {return $('#scoreText')})(),
-	MESSAGE_DOM_ELEMENT : (function() {return $('#message')})(),
-	HUD_DOM_ELEMENTS_SELECTORS : '#score, #stats',
 	
 	MOVE_LEFT : RapidFall.Constants.KeyCodes.LEFT_ARROW,
 	MOVE_RIGHT : RapidFall.Constants.KeyCodes.RIGHT_ARROW,
@@ -28,3 +23,11 @@ RapidFall.Config = {
 	PLATFORM_SPEED_INCREMENT_TIMER : 10000
 	
 };
+
+$(document).ready(function(){
+	RapidFall.Config.HIGHSCORE_ELEMENT = $('#highScoreText');
+	RapidFall.Config.SCORE_ELEMENT = $('#scoreText');
+	RapidFall.Config.MESSAGE_ELEMENT = $('#message');
+	RapidFall.Config.HUD_ELEMENT = $('#score, #stats');
+	RapidFall.Config.FOREGROUND_ELEMENT = $('#foreground');
+});
