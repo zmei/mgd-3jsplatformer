@@ -1,0 +1,9 @@
+body { width: 100%; height: 100%; overflow:hidden; margin:0; }
+.hud { font-family: Helvetica, Arial, sans-serif; font-size: 9px; font-weight:bold; z-index: 100; padding: 3px; color:white; background: black; opacity:0.9; }
+canvas { position: absolute; top: 0; left: 0; background-image:url('../resources/clouds.png'); z-index: 1; }
+#foreground { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image:url('../resources/near_clouds.png'); background-color:transparent; z-index: 2; }
+#score { position: absolute; width:74px; height:42px; top: 0; right: 0; display:none; }
+#stats { display:none; }
+#messageContainer { position: absolute; left: 50%; top: 50%; }
+#message { position: relative; left: -50%; text-align:center; font-size: 75%; padding: 10px; border-radius: 8px; }
+#message a { color: yellow; }
