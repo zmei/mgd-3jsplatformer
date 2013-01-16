@@ -1,62 +1,53 @@
 <html>
 	<head>
 		<title>Rapid Fall</title>
-		<style>
-			body { width: 100%; height: 100%; overflow:hidden; margin:0; }
-			.hud { font-family: Helvetica, Arial, sans-serif; font-size: 9px; font-weight:bold; z-index: 100; padding: 3px; color:white; background: black; opacity:0.9; }
-			canvas { position: absolute; top: 0; left: 0; background-image:url('resources/clouds.png'); z-index: 1; }
-			#foreground { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image:url('resources/near_clouds.png'); background-color:transparent; z-index: 2; }
-			#score { position: absolute; width:74px; height:42px; top: 0; right: 0; display:none; }
-			#stats { display:none; }
-			#messageContainer { position: absolute; left: 50%; top: 50%; }
-			#message { position: relative; left: -50%; text-align:center; font-size: 120%; padding: 10px; border-radius: 8px; }
-			#message a { color: yellow; }
-		</style>
+		<link rel="stylesheet" type="text/css" href="css/RapidFall.css" />
 	</head>
 	<body>
+		<div id="messageContainer">
+			<div id="message" class="hud">
+				<h1>RapidFall</h1>
+				<h2>a WebGL mini game</h2>
+				<p>by <a target="blank" href="mailto:acasaccia@gmail.com">acasaccia@gmail.com</a></p>
+				<div class="content">
+					<p>Loading...</p>
+					<img src="resources/loader.gif" />
+				</div>
+				<div class="credits">
+					<p>Powered by <a href="">Three.js</a></p>
+					<p><a href="http://oos.moxiecode.com/js_webgl/md2_converter/">MD2 to JSON converter</a> by <a href="http://oos.moxiecode.com/blog/">moxiecode.com</a></p>
+				</div>
+			</div>
+		</div>
 		<div id="foreground"></div>
-		<audio src="resources/wolf.mp3"></audio>
 		<div id="score" class="hud">
 			<div id="scoreText"></div>
 			<div id="highScoreText"></div>
 		</div>
-		<div id="messageContainer">
-			<div id="message" class="hud">
-				<p>
-					RapidFall<br>
-					<span style="font-size:75%">
-						a WebGL mini game<br>
-						by <a target="blank" href="mailto:acasaccia@gmail.com">acasaccia@gmail.com</a>
-					</span>
-				</p>
-				<p>
-					ENTER to start<br>
-					&larr; &rarr; to control
-				</p>
-				<p style="font-size:50%">
-					Powered by <a href="">Three.js</a><br>
-					<a href="http://oos.moxiecode.com/js_webgl/md2_converter/">MD2 to JSON converter</a> by <a href="http://oos.moxiecode.com/blog/">moxiecode.com</a><br>
-				</p>			
-			</div>
-		</div>
-		<script src="lib/three.js"></script>
-		<script src="lib/detector.js"></script>
-		<script src="lib/jquery-1.8.3.min.js"></script>
-		<script src="lib/stats.min.js"></script>
-		<script src="RapidFall.js"></script>
-		<script src="Constants.js"></script>
-		<script src="Config.js"></script>
-		<script src="Input.js"></script>
-		<script src="GameObjects/GameObjects.js"></script>
-		<script src="GameObjects/Platform.js"></script>
-		<script src="GameObjects/Player.js"></script>
-		<script src="GameState.js"></script>
+		<script src="js/lib/three.min.js"></script>
+		<script src="js/lib/detector.js"></script>
+		<script src="js/lib/jquery-1.8.3.min.js"></script>
+		<script src="js/lib/stats.min.js"></script>
+		<script src="js/RapidFall.js"></script>
+		<script src="js/Constants.js"></script>
+		<script src="js/Config.js"></script>
+		<script src="js/Input.js"></script>
+		<script src="js/GameObjects/GameObjects.js"></script>
+		<script src="js/GameObjects/Platform.js"></script>
+		<script src="js/GameObjects/Player.js"></script>
+		<script src="js/GameState.js"></script>
+		<script src="js/Loader.js"></script>
+		<audio src="resources/wolf.mp3"></audio>
 		<script>
-			var rf = new RapidFall({showFPS:true});
-			rf.initializeScene();
-			rf.initializeGameState();
-			rf.drawScene();
-			rf.mainloop();
+			$(document).ready(function(){
+				var rf = new RapidFall({showFPS:true});
+				RapidFall.Loader.load(function(){
+					$('#message .content').load('templates/controls.html');
+					rf.initializeScene();
+					rf.initializeGameState();
+					rf.mainloop();
+				});
+			});
 		</script>
 	</body>
 </html>

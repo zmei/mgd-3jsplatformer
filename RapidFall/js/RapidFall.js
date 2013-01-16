@@ -19,7 +19,7 @@ function RapidFall(parameters) {
 	
 		var GS = RapidFall.GameState;
 	
-		if (!GS.loading && !GS.gameOver) {
+		if (!GS.gameOver) {
 		
 			GS.score += dt;
 		
@@ -123,7 +123,7 @@ RapidFall.prototype.initializeScene = function () {
 	
 }
 
-RapidFall.prototype.initializeGameState = function () {	
+RapidFall.prototype.initializeGameState = function () {
 	RapidFall.GameState.reset();
 }
 

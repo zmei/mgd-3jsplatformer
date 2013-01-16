@@ -7,7 +7,6 @@ RapidFall.GameState = {
 	increaseSpeedTimer : 0,
 	platformSpeedIncrement : 0,
 	backgroundOffset: 0,
-	loading : 0,
 	player : null,
 	platforms : null
 }
@@ -23,7 +22,6 @@ RapidFall.GameState.reset = function () {
 	RapidFall.GameState.spawnPlatformTimer = 0;
 	RapidFall.GameState.increaseSpeedTimer = 0;
 	RapidFall.GameState.platformSpeedIncrement = 0;
-	RapidFall.GameState.loading = 0;
 	if (RapidFall.GameState.player == null) {
 		RapidFall.GameState.player = new RapidFall.GameObjects.Player();
 	} else {
