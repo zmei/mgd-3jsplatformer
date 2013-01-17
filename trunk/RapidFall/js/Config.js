@@ -29,6 +29,6 @@ $(document).ready(function(){
 	RapidFall.Config.SCORE_ELEMENT = (function(){return $('#scoreText')})();
 	RapidFall.Config.MESSAGE_ELEMENT = (function(){return $('#message')})();
 	RapidFall.Config.MESSAGE_CONTENT_ELEMENT = (function(){return $('#message .content')})();
-	RapidFall.Config.HUD_ELEMENT = (function(){return $('#score, #stats')})();
+	RapidFall.Config.getHUDElements = function(){return $('#score, #stats')};
 	RapidFall.Config.FOREGROUND_ELEMENT = (function(){return $('#foreground')})();
 });
