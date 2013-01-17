@@ -100,16 +100,15 @@ RapidFall.prototype.initializeScene = function () {
 	// RENDERER
 	if( Detector.webgl ){
 		this.renderer = new THREE.WebGLRenderer({antialias:true});
+		this.renderer.setClearColorHex( 0x000000, 0 );
+		this.renderer.setSize(width, height);
+		document.body.appendChild(this.renderer.domElement);
 	// uncomment if webgl is required
 	}else{
-		// Detector.addGetWebGLMessage();
-		return true;
+		return false;
 	//}else{
 	//	this.renderer = new THREE.CanvasRenderer();
 	}
-	this.renderer.setClearColorHex( 0x000000, 0 );
-	this.renderer.setSize(width, height);
-	document.body.appendChild(this.renderer.domElement);
 	
 	// LIGHTING
 	var ambientLight = new THREE.AmbientLight( 0xFFFFFF );
@@ -121,6 +120,7 @@ RapidFall.prototype.initializeScene = function () {
 	pointLight.position.z = 25;
 	RapidFall.scene.add(pointLight);
 	
+	return true;
 }
 
 RapidFall.prototype.initializeGameState = function () {
@@ -175,9 +175,9 @@ RapidFall.hideMessage = function() {
 }
 
 RapidFall.showHUD = function() {
-	$(RapidFall.Config.HUD_ELEMENT).fadeIn();
+	$(RapidFall.Config.getHUDElements()).fadeIn();
 }
 
 RapidFall.hideHUD = function() {
-	$(RapidFall.Config.HUD_ELEMENT).fadeOut();
+	$(RapidFall.Config.getHUDElements()).fadeOut();
 }
