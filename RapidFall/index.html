@@ -39,13 +39,17 @@
 		<script src="js/Loader.js"></script>
 		<audio src="resources/wolf.mp3"></audio>
 		<script>
-			$(document).ready(function(){
+			$(window).load(function(){
 				var rf = new RapidFall({showFPS:true});
 				RapidFall.Loader.load(function(){
-					$('#message .content').load('templates/controls.html');
-					rf.initializeScene();
-					rf.initializeGameState();
-					rf.mainloop();
+					if (rf.initializeScene()) {
+						RapidFall.Input.makeBindings();
+						rf.initializeGameState();
+						rf.mainloop();
+						$('#message .content').load('templates/controls.html');
+					} else {
+						$('#message .content').html(Detector.getWebGLErrorMessage());
+					}
 				});
 			});
 		</script>
