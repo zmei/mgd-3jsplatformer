@@ -140,7 +140,7 @@ RapidFall.prototype.updateHUD = function() {
 var backgroundOffset = 0;
 
 RapidFall.prototype.drawScene = function() {
-	backgroundOffset += 0.5;
+	backgroundOffset -= 1;
 	$(RapidFall.Config.FOREGROUND_ELEMENT).css('background-position', '0% ' + backgroundOffset + '%')
 	this.renderer.render(RapidFall.scene, this.camera);
 }
