@@ -12,7 +12,7 @@ RapidFall.GameState = {
 }
 
 RapidFall.GameState.reset = function () {
-	$('audio[src="resources/wolf.mp3"]').get(0).play();
+	soundManager.play('wolf_howl');
 	RapidFall.GameState.highscore = (function() {
 		var hs = parseInt(localStorage.getItem("RapidFallHighScore"));
 		return isNaN(hs) ? 0 : hs;
