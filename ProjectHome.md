@@ -1,0 +1,1 @@
+**Rapid Fall** is a simple game inspired by Nokia's Rapid Roll mobile game, developed during Master in Game Development 2012 in Verona to study code organization in a Javascript game and the WebGL browser's API.
